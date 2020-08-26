@@ -309,6 +309,11 @@ public class Pedido extends javax.swing.JPanel {
             rellenar_tabla_e();
             btn_egreso.setEnabled(false);
             btn_egresar_todos.setEnabled(jt_egreso.getRowCount() > 0);
+            utilidad.informar(null, "FUE EGRESADO CORRECTAMENTE EL PEDIDO", "EGRESO PEDIDO");
+            actualizar();
+            rellenar_tabla_e();
+            rellenar_tabla_i();
+            rellenar_tabla_entrega();
         } else {
             utilidad.informar(null, "ERROR: no se pudo actualizar el registro", "EGRESO PEDIDO");
         }
@@ -357,6 +362,10 @@ public class Pedido extends javax.swing.JPanel {
         if (resta < 0) {
             if (pao.ingresado(c_pedido, pe2, true)) {
                 utilidad.informar(null, "PEDIDO INGRESADO CORRECTAMENTE CON ATRASO DE " + Math.abs(resta) + " DIAS", "INGRESO PEDIDO");
+                actualizar();
+                rellenar_tabla_e();
+                rellenar_tabla_i();
+                rellenar_tabla_entrega();
             } else {
                 utilidad.informar(null, "PROBLEMA CON LA BASE DE DATOS, INTENTA DE NUEVO", "INGRESO PEDIDO");
             }
@@ -364,6 +373,9 @@ public class Pedido extends javax.swing.JPanel {
         } else {
             if (pao.ingresado(c_pedido, pe2, false)) {
                 utilidad.informar(null, "PEDIDO INGRESADO CORRECTAMENTE, SIN ATRASOS", "INGRESO PEDIDO");
+                rellenar_tabla_e();
+                rellenar_tabla_i();
+                rellenar_tabla_entrega();
             } else {
                 utilidad.informar(null, "PROBLEMA CON LA BASE DE DATOS, INTENTA DE NUEVO", "INGRESO PEDIDO");
             }
@@ -378,223 +390,13 @@ public class Pedido extends javax.swing.JPanel {
         Double total = (Double) jt_entregas.getValueAt(fila, 4);
         String boo = (String) jt_entregas.getValueAt(fila, 6);
         Double credito = credito(nit1);
-        boolean atrasado = false;
+        boolean atrasado;
         if (boo.equalsIgnoreCase("SI")) {
             atrasado = true;
         } else {
             atrasado = false;
         }
-
-        if (credito > 0) {
-            JPanel jp = new JPanel();
-            jp.setLayout(new GridLayout(2, 2));
-            JComboBox jcb = new JComboBox(new String[]{"PAGO EN EFECTIVO", "USAR CREDITO"});
-            jp.add(new JLabel("Dado que tu credito es Q" + credito + " ."));
-            jp.add(new JLabel("Elige tu método de pago:"));
-            jp.add(new JLabel("Metodo de pago: "));
-            jp.add(jcb);
-            JOptionPane.showConfirmDialog(null, jp, "METODO DE PAGO", JOptionPane.OK_OPTION);
-            if (jcb.getSelectedItem().toString().equalsIgnoreCase("PAGO EN EFECTIVO")) {
-                pago_pedidos(total, nit1, atrasado, codigo_p);
-            } else {
-                JPanel jp2 = new JPanel();
-                JTextField tot = new JTextField(total + "");
-                JTextField cred = new JTextField(credito + "");
-                tot.setEnabled(false);
-                cred.setEnabled(false);
-                tot.setHorizontalAlignment(SwingConstants.CENTER);
-                cred.setHorizontalAlignment(SwingConstants.CENTER);
-
-                JTextField jt = new JTextField();
-                jt.setHorizontalAlignment(SwingConstants.CENTER);
-                JTextField jt2 = new JTextField();
-                jt2.setHorizontalAlignment(SwingConstants.CENTER);
-                TextPrompt tx12 = new TextPrompt("MONTO EFECTIVO", jt);
-                TextPrompt tx14 = new TextPrompt("MONTO CREDITO A USAR", jt2);
-                JButton cancelar = new JButton("Cancelar");
-
-                JButton continuar = new JButton("Continuar");
-                continuar.setEnabled(false);
-                tx12.changeStyle(2);
-                tx14.changeStyle(2);
-                jp2.setLayout(new GridLayout(4, 2));
-                jp2.add(new JLabel("TOTAL DE VENTA: ", SwingConstants.CENTER));
-                jp2.add(new JLabel("CREDITO DISPONIBLE: ", SwingConstants.CENTER));
-                jp2.add(tot);
-                jp2.add(cred);
-                jp2.add(jt);
-                jp2.add(jt2);
-                jp2.add(cancelar);
-                jp2.add(continuar);
-                JFrame jf = new JFrame();
-                jf.setUndecorated(true);
-                jf.setLocationRelativeTo(null);
-                jf.setSize(400, 150);
-                jf.add(jp2);
-                jf.setVisible(true);
-                cancelar.addActionListener((ActionEvent ae) -> {
-                    jf.setVisible(false);
-                    JOptionPane.showMessageDialog(null, new JLabel("No se registro ninguna venta"), "CANCELAR VENTA", JOptionPane.ERROR_MESSAGE);
-                });
-                Utilidad utilidad = new Utilidad();
-                KeyListener key = new KeyListener() {
-                    @Override
-                    public void keyTyped(KeyEvent ke) {
-
-                    }
-
-                    @Override
-                    public void keyPressed(KeyEvent ke) {
-
-                    }
-
-                    @Override
-                    public void keyReleased(KeyEvent ke) {
-                        String e = jt.getText();
-                        String tm = "";
-                        char c = ke.getKeyChar();
-
-                        if (ke.getKeyCode() != 8) {
-                            if (!Character.isDigit(c)) {
-                                if (e.length() > 0) {
-                                    for (int i = 0; i < (e.length()); i++) {
-                                        if (Character.isDigit(e.charAt(i)) || c == '.') {
-                                            tm += e.charAt(i) + "";
-                                        }
-                                    }
-                                    jt.setText(tm);
-                                    comprobar(tm);
-                                } else {
-                                    jt.setText("0");
-                                    comprobar(e);
-                                }
-                            } else {
-                                comprobar(e);
-                            }
-                        } else {
-                            comprobar(e);
-                        }
-                    }
-
-                    public void comprobar(String tm) {
-                        String ef = jt.getText();
-                        String f = jt2.getText();
-                        Double eff = 0.0;
-                        Double ff = 0.0;
-                        if (!ef.isEmpty()) {
-                            eff = Double.parseDouble(ef);
-                        }
-                        if (!f.isEmpty()) {
-                            ff = Double.parseDouble(f);
-                        }
-                        Double a = total - (eff + ff);
-                        Double b = credito - ff;
-                        tot.setText(a + "");
-                        cred.setText(b + "");
-                        nit.setText(b + "");
-                        if ((total <= (eff + ff)) && (credito >= ff)) {
-                            continuar.setEnabled(true);
-                        } else {
-                            if (credito < ff) {
-                                jt2.setForeground(Color.red);
-                            } else {
-                                jt2.setForeground(Color.black);
-                            }
-                            continuar.setEnabled(false);
-                        }
-                    }
-                };
-
-                KeyListener key2 = new KeyListener() {
-                    @Override
-                    public void keyTyped(KeyEvent ke) {
-
-                    }
-
-                    @Override
-                    public void keyPressed(KeyEvent ke) {
-
-                    }
-
-                    @Override
-                    public void keyReleased(KeyEvent ke) {
-
-                        String e = jt2.getText();
-                        String tm = "";
-                        char c = ke.getKeyChar();
-
-                        if (ke.getKeyCode() != 8) {
-                            if (!Character.isDigit(c)) {
-                                if (e.length() > 0) {
-                                    for (int i = 0; i < (e.length()); i++) {
-                                        if (Character.isDigit(e.charAt(i)) || c == '.') {
-                                            tm += e.charAt(i) + "";
-                                        }
-                                    }
-                                    jt2.setText(tm);
-                                    comprobar(tm);
-                                } else {
-                                    jt2.setText("0");
-                                    comprobar(e);
-                                }
-                            } else {
-                                comprobar(e);
-                            }
-                        } else {
-                            comprobar(e);
-                        }
-                    }
-
-                    public void comprobar(String tm) {
-                        String ef = jt.getText();
-                        String f = jt2.getText();
-                        Double eff = 0.0;
-                        Double ff = 0.0;
-                        if (!ef.isEmpty()) {
-                            eff = Double.parseDouble(ef);
-                        }
-                        if (!f.isEmpty()) {
-                            ff = Double.parseDouble(f);
-                        }
-                        Double a = total - (eff + ff);
-                        Double b = credito - ff;
-                        tot.setText(a + "");
-                        cred.setText(b + "");
-                        nit.setText(b + "");
-                        if ((total <= (eff + ff)) && (credito >= ff)) {
-                            continuar.setEnabled(true);
-                        } else {
-                            if (credito < ff) {
-                                jt2.setForeground(Color.red);
-                            } else {
-                                jt2.setForeground(Color.black);
-                            }
-                            continuar.setEnabled(false);
-                        }
-                    }
-                };
-
-                continuar.addActionListener((ActionEvent ae) -> {
-                    //Double actual_c = Double.parseDouble(cred.getText());
-                    //ClienteDAO cliente = new ClienteDAO(base);
-                    //venta(Double.parseDouble(jtf_credito.getText()));
-
-                    //completar_entrega(nit1, total, credito, codigo_p, atrasado);
-                    jf.setVisible(false);
-
-                });
-                jt.addKeyListener(key);
-                jt2.addKeyListener(key2);
-                //JOptionPane.showConfirmDialog(null, jp2, "METODO DE PAGO", JOptionPane.OK_OPTION);
-
-            }
-        } else {
-            Utilidad ut = new Utilidad();
-            ut.informar(null, "Dado que el cliente no tiene credito, solo se puede pagar con efectivo", "METODO DE PAGO");
-            pago_pedidos(total, nit1, atrasado, codigo_p);
-        }
-
-
+        pago_pedidos(total, nit1, atrasado, codigo_p);
     }//GEN-LAST:event_btn_entregarActionPerformed
 
     private void nitKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nitKeyReleased
@@ -705,7 +507,7 @@ public class Pedido extends javax.swing.JPanel {
         });
     }
 
-    public void completar_entrega(String nit, Double total, Double credito, int codigo_pedido,boolean atrasado) {
+    public void completar_entrega(String nit, Double total, Double credito, int codigo_pedido, boolean atrasado) {
         ClienteDAO cliente = new ClienteDAO(base);
         ProductoDAO pao = new ProductoDAO(base);
         int ingresado = cliente.crear_factura(getTienda_actual(), nit, getFecha_actual(),
@@ -713,20 +515,28 @@ public class Pedido extends javax.swing.JPanel {
         if (ingresado != -1) {
             int filas = jt_entregas.getSelectedRow();
             String mensaje = "Los siguientes productos fueron ingresados correctamente: ";
-            String[] datos = pao.productos(codigo_pedido);
-            for (int i = 0; i < datos.length; i++) {
-                if (cliente.ingresar_venta(ingresado, datos[0], Integer.parseInt(datos[1]), Double.parseDouble(datos[2]))) {
-                    mensaje += datos[0] + " ";
+            ArrayList<String[]> datos = pao.productos(codigo_pedido);
+            for (int i = 0; i < datos.size(); i++) {
+                if (cliente.ingresar_venta(ingresado, datos.get(i)[0], Integer.parseInt(datos.get(i)[1]), Double.parseDouble(datos.get(i)[2]))) {
+                    mensaje += datos.get(i)[0] + " ";
                 }
             }
-            utilidad.informar(null, mensaje, "TERMINAR ENTREGA");
-        }
-        if (atrasado){
-            Double suma = total * 0.02;
-            if (cliente.actualizar_cliente2(nit, suma)){
-                utilidad.informar(null, "DADO QUE HUBO UN RETRASO EN LA ENTREGA, FUE SUMADO EL 2% DEL TOTAL","RETRIBUCION POR TARDANZA");
+            if (pao.entregado(codigo_pedido)) {
+                utilidad.informar(null, mensaje, "TERMINAR ENTREGA");
+                actualizar();
+                rellenar_tabla_i();
+                rellenar_tabla_e();
+                rellenar_tabla_entrega();
             } else {
-                utilidad.informar(null, "NO SE PUDO ACTUALIZAR BIEN EL CLIENTE","RETRIBUCION POR TARDANZA");
+                utilidad.informar(null, "OCURRIO UN ERROR EN LA BASE DE DATOS", "TERMINAR ENTREGA");
+            }
+        }
+        if (atrasado) {
+            Double suma = total * 0.02;
+            if (cliente.actualizar_cliente2(nit, suma)) {
+                utilidad.informar(null, "DADO QUE HUBO UN RETRASO EN LA ENTREGA, FUE SUMADO EL 2% DEL TOTAL", "RETRIBUCION POR TARDANZA");
+            } else {
+                utilidad.informar(null, "NO SE PUDO ACTUALIZAR BIEN EL CLIENTE", "RETRIBUCION POR TARDANZA");
             }
         }
     }
@@ -866,15 +676,16 @@ public class Pedido extends javax.swing.JPanel {
         }
         return dias;
     }
-    public void actualizar(){
-            ProductoDAO pro = new ProductoDAO(base);
-            TiendaDAO ti = new TiendaDAO(base);
-            ClienteDAO cl = new ClienteDAO(base);
-            pedidos_egreso = pro.pedidos_egreso();
-            pedidos_ingreso = pro.pedidos_ingreso();
-            tiempos = ti.obtener_tiempos();
-            pedidos_entrega = pro.pedidos_entrega();
-            clientes = cl.obtener_clientes();
+
+    public void actualizar() {
+        ProductoDAO pro = new ProductoDAO(base);
+        TiendaDAO ti = new TiendaDAO(base);
+        ClienteDAO cl = new ClienteDAO(base);
+        pedidos_egreso = pro.pedidos_egreso();
+        pedidos_ingreso = pro.pedidos_ingreso();
+        tiempos = ti.obtener_tiempos();
+        pedidos_entrega = pro.pedidos_entrega();
+        clientes = cl.obtener_clientes();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

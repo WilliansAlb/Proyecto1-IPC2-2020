@@ -629,7 +629,7 @@ public class ProductoDAO {
 
     public ArrayList<PedidoDTO> pedidos_entrega() {
         ArrayList<PedidoDTO> p = new ArrayList<>();
-        String sql = "SELECT p.codigo_pedido,p.fecha,p.codigo_tienda1,p.codigo_tienda2,p.nit,p.anticipo,SUM(s.total) "
+        String sql = "SELECT p.codigo_pedido,p.fecha,p.codigo_tienda1,p.codigo_tienda2,p.nit,p.anticipo,SUM(s.total),p.atrasado "
                 + "FROM Pedido p JOIN Solicitado s WHERE p.codigo_pedido = s.codigo_pedido AND p.ingresado = true "
                 + "AND p.entregado = false GROUP BY(p.codigo_pedido);";
         try (PreparedStatement ps = cn.prepareStatement(sql);) {
@@ -643,6 +643,7 @@ public class ProductoDAO {
                 v.setNit(rs.getString(5));
                 v.setAnticipo(rs.getDouble(6));
                 v.setTotal(rs.getDouble(7));
+                v.setAtrasado(rs.getBoolean(8));
                 p.add(v);
             }
         } catch (SQLException ex) {
@@ -680,24 +681,39 @@ public class ProductoDAO {
         }
         return ingresado;
     }
+    
+    public boolean entregado(int codigo_pedido) {
+        boolean ingresado = false;
+        String sql = "UPDATE Pedido SET entregado = true WHERE codigo_pedido = ?";
+        try (PreparedStatement ps = cn.prepareStatement(sql);) {
+            ps.setInt(1, codigo_pedido);
+            ps.executeUpdate();
+            ingresado = true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            ingresado = false;
+        }
+        return ingresado;
+    }
+    
 
-    public String[] productos(int codigo_pedido) {
-        String[] datos = new String[3];
+    public ArrayList<String[]> productos(int codigo_pedido) {
+        ArrayList<String[]> prod = new ArrayList<>();
         String sql = "SELECT codigo_producto,cantidad,total FROM Solicitado WHERE codigo_pedido = ?";
         try (PreparedStatement ps = cn.prepareStatement(sql);) {
             ps.setInt(1, codigo_pedido);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                String[] datos = new String[3];
                 datos[0] = rs.getString("codigo_producto");
                 datos[1] = rs.getInt("cantidad") + "";
                 datos[2] = rs.getDouble("total") + "";
+                prod.add(datos);
             }
         } catch (SQLException ex) {
             System.out.println(ex);
-            datos[0] = "";
-            datos[1] = "";
-            datos[2] = "";
+            prod = null;
         }
-        return datos;
+        return prod;
     }
 }

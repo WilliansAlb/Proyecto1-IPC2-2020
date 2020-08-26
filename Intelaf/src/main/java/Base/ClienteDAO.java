@@ -158,7 +158,7 @@ public class ClienteDAO {
     
     public boolean actualizar_cliente2(String nit, Double credito) {
         boolean ingresado = false;
-        String sql = "UPDATE Cliente SET credito += ? WHERE nit = ?";
+        String sql = "UPDATE Cliente SET credito = credito + ? WHERE nit = ?";
         try (PreparedStatement ps = cn.prepareStatement(sql);) {
             ps.setString(1, nit);
             ps.setDouble(2, credito);
