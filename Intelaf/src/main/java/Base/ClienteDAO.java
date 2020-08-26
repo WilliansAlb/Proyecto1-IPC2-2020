@@ -137,9 +137,9 @@ public class ClienteDAO {
         }
         return ingresado;
     }
-    
-    public boolean ingresar_venta(int codigo_factura,String codigo_producto,
-            int cantidad, Double total){
+
+    public boolean ingresar_venta(int codigo_factura, String codigo_producto,
+            int cantidad, Double total) {
         boolean ingresado = false;
         String sql = "INSERT INTO Venta(codigo_factura,codigo_producto,cantidad,total) VALUES (?,?,?,?)";
         try (PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -151,17 +151,17 @@ public class ClienteDAO {
             ingresado = true;
         } catch (SQLException ex) {
             ingresado = false;
-        }   
+        }
         return ingresado;
-        
+
     }
-    
+
     public boolean actualizar_cliente2(String nit, Double credito) {
         boolean ingresado = false;
         String sql = "UPDATE Cliente SET credito = credito + ? WHERE nit = ?";
         try (PreparedStatement ps = cn.prepareStatement(sql);) {
-            ps.setString(1, nit);
-            ps.setDouble(2, credito);
+            ps.setDouble(1, credito);
+            ps.setString(2, nit);
             ps.executeUpdate();
             ingresado = true;
         } catch (SQLException ex) {

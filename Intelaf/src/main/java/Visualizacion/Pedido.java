@@ -507,10 +507,10 @@ public class Pedido extends javax.swing.JPanel {
         });
     }
 
-    public void completar_entrega(String nit, Double total, Double credito, int codigo_pedido, boolean atrasado) {
+    public void completar_entrega(String nit1, Double total, Double credito, int codigo_pedido, boolean atrasado) {
         ClienteDAO cliente = new ClienteDAO(base);
         ProductoDAO pao = new ProductoDAO(base);
-        int ingresado = cliente.crear_factura(getTienda_actual(), nit, getFecha_actual(),
+        int ingresado = cliente.crear_factura(getTienda_actual(), nit1, getFecha_actual(),
                 total, credito);
         if (ingresado != -1) {
             int filas = jt_entregas.getSelectedRow();
@@ -527,6 +527,7 @@ public class Pedido extends javax.swing.JPanel {
                 rellenar_tabla_i();
                 rellenar_tabla_e();
                 rellenar_tabla_entrega();
+                nit.setText("");
             } else {
                 utilidad.informar(null, "OCURRIO UN ERROR EN LA BASE DE DATOS", "TERMINAR ENTREGA");
             }
