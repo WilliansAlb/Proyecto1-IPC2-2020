@@ -46,9 +46,8 @@ public class Ventana extends javax.swing.JFrame {
     public Ventana() {
         initComponents();
         setLocationRelativeTo(null);
-        agregar_hover();
         frame = this;
-
+        agregar_hover();
         int si = -1;
         if (op.conectar()) {
             TiendaDAO tem = new TiendaDAO(op);
@@ -505,19 +504,40 @@ public class Ventana extends javax.swing.JFrame {
         if (pedido.isVisible()) {
             pedido.setTienda_actual(codigo_tienda);
             pedido.setFecha_actual(fecha_actual);
+            pedido.actualizar();
             pedido.rellenar_tabla_e();
             pedido.rellenar_tabla_i();
             pedido.rellenar_tabla_entrega();
         }
     }//GEN-LAST:event_jcb_tiendasItemStateChanged
 
-    private void jdc_fecha_actualMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jdc_fecha_actualMouseEntered
+    private void jl_boton_buscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_boton_buscarMouseClicked
+        cerrando();
+        reporte = new Reportes();
+        reporte.setCodigo_tienda(codigo_tienda);
+        reporte.setFecha_actual(fecha_actual);
+        reporte.iniciar();
+        reporte.setVisible(true);
+        jp_escritorio.add(reporte);
+        jp_escritorio.validate();
+        despintando_aviso();
+        jl_buscar_aviso.setOpaque(true);
+        jl_buscar_aviso.setBackground(Color.yellow);
+    }//GEN-LAST:event_jl_boton_buscarMouseClicked
 
-    }//GEN-LAST:event_jdc_fecha_actualMouseEntered
-
-    private void jdc_fecha_actualMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jdc_fecha_actualMouseClicked
-
-    }//GEN-LAST:event_jdc_fecha_actualMouseClicked
+    private void jl_boton_pedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_boton_pedidoMouseClicked
+        cerrando();
+        pedido.setTienda_actual(codigo_tienda);
+        pedido.setFecha_actual(fecha_actual);
+        pedido.actualizar();
+        pedido.setVisible(true);
+        
+        jp_escritorio.add(pedido);
+        jp_escritorio.validate();
+        despintando_aviso();
+        jl_pedido_aviso.setOpaque(true);
+        jl_pedido_aviso.setBackground(Color.yellow);
+    }//GEN-LAST:event_jl_boton_pedidoMouseClicked
 
     private void jdc_fecha_actualPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jdc_fecha_actualPropertyChange
         fecha_actual = jdc_fecha_actual.getDate();
@@ -539,31 +559,13 @@ public class Ventana extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jdc_fecha_actualPropertyChange
 
-    private void jl_boton_buscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_boton_buscarMouseClicked
-        cerrando();
-        reporte = new Reportes();
-        reporte.setCodigo_tienda(codigo_tienda);
-        reporte.setFecha_actual(fecha_actual);
-        reporte.iniciar();
-        reporte.setVisible(true);
-        jp_escritorio.add(reporte);
-        jp_escritorio.validate();
-        despintando_aviso();
-        jl_buscar_aviso.setOpaque(true);
-        jl_buscar_aviso.setBackground(Color.yellow);
-    }//GEN-LAST:event_jl_boton_buscarMouseClicked
+    private void jdc_fecha_actualMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jdc_fecha_actualMouseEntered
 
-    private void jl_boton_pedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_boton_pedidoMouseClicked
-        cerrando();
-        pedido.setTienda_actual(codigo_tienda);
-        pedido.setFecha_actual(fecha_actual);
-        pedido.setVisible(true);
-        jp_escritorio.add(pedido);
-        jp_escritorio.validate();
-        despintando_aviso();
-        jl_pedido_aviso.setOpaque(true);
-        jl_pedido_aviso.setBackground(Color.yellow);
-    }//GEN-LAST:event_jl_boton_pedidoMouseClicked
+    }//GEN-LAST:event_jdc_fecha_actualMouseEntered
+
+    private void jdc_fecha_actualMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jdc_fecha_actualMouseClicked
+
+    }//GEN-LAST:event_jdc_fecha_actualMouseClicked
 
     /**
      * @param args the command line arguments

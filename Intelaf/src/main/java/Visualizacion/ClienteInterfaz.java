@@ -53,6 +53,7 @@ public class ClienteInterfaz extends javax.swing.JFrame {
         jl_boton_buscar.setVisible(false);
         Date fecha = new Date();
         jdc_fecha_actual.setDate(fecha);
+        agregar_hover();
     }
 
     public void agregar_hover() {
@@ -99,6 +100,7 @@ public class ClienteInterfaz extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jdc_fecha_actual = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -281,6 +283,13 @@ public class ClienteInterfaz extends javax.swing.JFrame {
 
         jLabel2.setText("Fecha actual:");
 
+        jButton2.setText("CAMBIAR A EMPLEADO");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout FondoLayout = new javax.swing.GroupLayout(Fondo);
         Fondo.setLayout(FondoLayout);
         FondoLayout.setHorizontalGroup(
@@ -290,7 +299,8 @@ public class ClienteInterfaz extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(FondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(FondoLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 236, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jdc_fecha_actual, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -315,7 +325,8 @@ public class ClienteInterfaz extends javax.swing.JFrame {
                         .addComponent(btn_exit)
                         .addComponent(btn_exit1)
                         .addComponent(jButton1)
-                        .addComponent(jLabel2))
+                        .addComponent(jLabel2)
+                        .addComponent(jButton2))
                     .addComponent(jdc_fecha_actual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jp_escritorio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -436,6 +447,12 @@ public class ClienteInterfaz extends javax.swing.JFrame {
         jl_ingresar_aviso.setOpaque(true);
         jl_ingresar_aviso.setBackground(Color.yellow);
     }//GEN-LAST:event_jl_boton_ingresarMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Ventana v = new Ventana();
+        v.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -618,6 +635,7 @@ public class ClienteInterfaz extends javax.swing.JFrame {
     private javax.swing.JButton btn_exit;
     private javax.swing.JButton btn_exit1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel2;
     private com.toedter.calendar.JDateChooser jdc_fecha_actual;
     private javax.swing.JLabel jl_boton_buscar;

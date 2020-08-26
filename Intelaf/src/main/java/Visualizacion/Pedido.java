@@ -866,6 +866,16 @@ public class Pedido extends javax.swing.JPanel {
         }
         return dias;
     }
+    public void actualizar(){
+            ProductoDAO pro = new ProductoDAO(base);
+            TiendaDAO ti = new TiendaDAO(base);
+            ClienteDAO cl = new ClienteDAO(base);
+            pedidos_egreso = pro.pedidos_egreso();
+            pedidos_ingreso = pro.pedidos_ingreso();
+            tiempos = ti.obtener_tiempos();
+            pedidos_entrega = pro.pedidos_entrega();
+            clientes = cl.obtener_clientes();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_egresar_todos;
