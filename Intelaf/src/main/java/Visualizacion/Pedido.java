@@ -534,7 +534,7 @@ public class Pedido extends javax.swing.JPanel {
         }
         if (atrasado) {
             Double suma = total * 0.02;
-            if (cliente.actualizar_cliente2(nit, suma)) {
+            if (cliente.actualizar_cliente2(nit1, suma)) {
                 utilidad.informar(null, "DADO QUE HUBO UN RETRASO EN LA ENTREGA, FUE SUMADO EL 2% DEL TOTAL", "RETRIBUCION POR TARDANZA");
             } else {
                 utilidad.informar(null, "NO SE PUDO ACTUALIZAR BIEN EL CLIENTE", "RETRIBUCION POR TARDANZA");
